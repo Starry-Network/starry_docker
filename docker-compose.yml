@@ -1,0 +1,74 @@
+version: "3.2"
+
+services:
+  node:
+    container_name: node-template
+    image: paritytech/ci-linux:974ba3ac-20201006
+    working_dir: /var/www/node-template
+    ports:
+      - "9944:9944"
+    environment:
+      - CARGO_HOME=/var/www/node-template/.cargo
+    volumes:
+      - ./node:/var/www/node-template
+      - type: bind
+        source: ./node/.local
+        target: /root/.local
+    command: bash -c "cargo build --release && ./target/release/node-template --dev --ws-external"
+
+  postgres:
+    image: postgres:12-alpine
+    ports:
+      - 5432:5432
+    # Uncomment in the production environment
+    volumes:
+      - .data/postgres:/var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD: postgres
+
+  subquery-node:
+    image: onfinality/subql-node:latest
+    depends_on:
+      - "postgres"
+    restart: always
+    environment:
+      DB_USER: postgres
+      DB_PASS: postgres
+      DB_DATABASE: postgres
+      DB_HOST: postgres
+      DB_PORT: 5432
+    volumes:
+      - ./query/:/app
+    command:
+      - -f=/app
+      - --local
+
+  graphql-engine:
+    image: onfinality/subql-query:latest
+    ports:
+      - 3000:3000
+    depends_on:
+      - "postgres"
+    restart: always
+    environment:
+      DB_USER: postgres
+      DB_PASS: postgres
+      DB_DATABASE: postgres
+      DB_HOST: postgres
+      DB_PORT: 5432
+    command:
+      - --name=app
+      - --playground
+
+  frontend:
+    container_name: app
+    build: ./app
+    volumes:
+      - "./app/:/app"
+      - "/app/node_modules"
+    ports:
+      - 3001:3000
+    stdin_open: true
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+    command: npm start

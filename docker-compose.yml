@@ -14,7 +14,7 @@ services:
       - type: bind
         source: ./node/.local
         target: /root/.local
-    command: bash -c "cargo build --release && ./target/release/node-template --dev --ws-external"
+    command: bash -c "cargo build --release && ./target/release/node-template --dev --ws-external --port 30333 --ws-port 9944 --rpc-port 9933"
 
   postgres:
     image: postgres:12-alpine
@@ -25,6 +25,8 @@ services:
       - .data/postgres:/var/lib/postgresql/data
     environment:
       POSTGRES_PASSWORD: postgres
+    depends_on: 
+        - node
 
   subquery-node:
     image: onfinality/subql-node:latest
@@ -42,6 +44,8 @@ services:
     command:
       - -f=/app
       - --local
+    depends_on: 
+      - node
 
   graphql-engine:
     image: onfinality/subql-query:latest
@@ -59,6 +63,8 @@ services:
     command:
       - --name=app
       - --playground
+    depends_on: 
+      - node
 
   frontend:
     container_name: app
@@ -72,3 +78,5 @@ services:
     environment:
       - CHOKIDAR_USEPOLLING=true
     command: npm start
+    depends_on:
+      - graphql-engine 

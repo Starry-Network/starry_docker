@@ -27,3 +27,5 @@ Finally run to start the container:
 ```
 docker-compose pull && docker-compose up
 ```
+
+After the node has been compiled, Starry will start working

@@ -25,8 +25,6 @@ services:
       - .data/postgres:/var/lib/postgresql/data
     environment:
       POSTGRES_PASSWORD: postgres
-    depends_on: 
-        - node
 
   subquery-node:
     image: onfinality/subql-node:latest
@@ -44,8 +42,6 @@ services:
     command:
       - -f=/app
       - --local
-    depends_on: 
-      - node
 
   graphql-engine:
     image: onfinality/subql-query:latest
@@ -63,8 +59,6 @@ services:
     command:
       - --name=app
       - --playground
-    depends_on: 
-      - node
 
   frontend:
     container_name: app
@@ -77,6 +71,9 @@ services:
     stdin_open: true
     environment:
       - CHOKIDAR_USEPOLLING=true
+      - REACT_APP_CHAIN_ENDPOINT=ws://localhost:9944
+      - REACT_APP_IPFS_HOST=ipfs.infura.io
+      - REACT_APP_IPFS_PORT=5001
+      - REACT_APP_IPFS_PROTOCOL=https
+      - REACT_APP_QUERY_ENDPOINT=http://localhost:3000
     command: npm start
-    depends_on:
-      - graphql-engine 

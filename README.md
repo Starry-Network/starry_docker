@@ -16,7 +16,7 @@ if host.docker.internal not work, change it to 172.17.0.1
 
 see more at here https://stackoverflow.com/questions/48546124/what-is-linux-equivalent-of-host-docker-internal
 
-change frontend's environment in docker-compose.yml
+change app's environment in docker-compose.yml
 ```
 REACT_APP_CHAIN_ENDPOINT=ws://localhost:9944
 REACT_APP_QUERY_ENDPOINT=http://localhost:3000

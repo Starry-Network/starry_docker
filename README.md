@@ -1,5 +1,7 @@
 prepare code:
 
+make sure you have Node >= 15.0 and yarn.
+
 ```
 sh prepare.sh
 ```

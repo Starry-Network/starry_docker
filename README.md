@@ -22,6 +22,8 @@ REACT_APP_CHAIN_ENDPOINT=ws://localhost:9944
 REACT_APP_QUERY_ENDPOINT=http://localhost:3000
 ```
 just use your localhost ip.
+if you want to visit app with public ip, just replace localhost to your ip and ensure that ports 9944 and 3000 can be accessed properly.
+
 make sure frontend can connect to query and node correct.
 
 Finally run to start the container:
